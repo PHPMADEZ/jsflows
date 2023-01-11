@@ -1,0 +1,69 @@
+{
+  "account_id": 1,
+  "name": "CSV omzetten naar nieuwe XML",
+  "sections": {
+    "1": {
+      "section": "import",
+      "api_id": 2,
+      "action": "read",
+      "parameters": {
+        "file_mask": "*.csv",
+        "template": "csv-template.csv"
+      }
+    },
+    "5": {
+      "section": "transformation",
+      "type": "Cast",
+      "gum_type": "Product",
+      "inputs": [
+        "additionalData.main",
+        "string"
+      ],
+      "targets": [
+        {
+          "type": "same",
+          "gum_keys": [
+            "additionalData.main"
+          ]
+        }
+      ]
+    },              
+    "10": {
+      "section": "transformation",
+      "type": "Copy",
+      "gum_type": "Product",
+      "inputs": [
+        "sku"
+      ],
+      "targets": [
+        {
+          "type": "same",
+          "gum_keys": [
+            "additionalData.extraSku"
+          ]
+        }
+      ]
+    },
+    "20": {
+      "section": "transformation",
+      "type": "Filter",
+      "gum_type": "Product",
+      "options": {
+        "include": [
+          "description CONTAINS 'KLM'"
+        ]
+      }
+    },
+    "30": {
+      "section": "export",
+      "api_id": 2,
+      "from": 5,
+      "action": "write",
+      "parameters": {
+        "filename": "export-copy.xml",
+        "template": "exact-copy.xml",
+        "overwrite": true
+      }
+    }
+  }
+}
